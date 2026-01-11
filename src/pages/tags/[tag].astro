@@ -20,11 +20,11 @@ const { posts, works } = await getEntriesForTag(tag.slug);
 			<h2 class="text-lg font-semibold">Posts</h2>
 			<ul class="mt-4 space-y-3">
 				{posts.map((p) => (
-					<li>
+					<li class="rounded-lg border border-border bg-card p-4">
 						<a href={`/posts/${p.slug}`} class="no-underline hover:underline">
 							<span class="font-medium">{p.data.title}</span>
 						</a>
-						<div class="text-sm text-zinc-500 dark:text-zinc-400">{formatYmd(p.data.pubDate)}</div>
+						<div class="mt-1 text-sm text-muted-foreground">{formatYmd(p.data.pubDate)}</div>
 					</li>
 				))}
 			</ul>
@@ -36,16 +36,16 @@ const { posts, works } = await getEntriesForTag(tag.slug);
 			<h2 class="text-lg font-semibold">Works</h2>
 			<ul class="mt-4 space-y-3">
 				{works.map((w) => (
-					<li>
+					<li class="rounded-lg border border-border bg-card p-4">
 						<a href={`/works/${w.slug}`} class="no-underline hover:underline">
 							<span class="font-medium">{w.data.title}</span>
 						</a>
-						<div class="text-sm text-zinc-500 dark:text-zinc-400">{formatYmd(w.data.date)}</div>
+						<div class="mt-1 text-sm text-muted-foreground">{formatYmd(w.data.date)}</div>
 					</li>
 				))}
 			</ul>
 		</section>
 	) : null}
 
-	{!posts.length && !works.length ? <p class="mt-8 text-zinc-600 dark:text-zinc-300">Nothing here yet.</p> : null}
+	{!posts.length && !works.length ? <p class="mt-8 text-muted-foreground">Nothing here yet.</p> : null}
 </BaseLayout>
