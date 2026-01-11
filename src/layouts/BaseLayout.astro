@@ -185,17 +185,16 @@ const { title, description } = Astro.props;
 					}
 
 					document.addEventListener('click', (event) => {
-						const link = event.target instanceof Element ? event.target.closest('a[href^="/"]') : null;
+						const link = event.target instanceof Element ? event.target.closest('header nav a') : null;
 						if (!(link instanceof HTMLAnchorElement)) return;
+						if (!link.href) return;
 						if (link.target && link.target !== '_self') return;
 						if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 						if (event.button !== 0) return;
 
 						const current = normalizePath(window.location.pathname);
 						const next = normalizePath(link.pathname);
-						if (current === next) {
-							event.preventDefault();
-						}
+						if (current === next) event.preventDefault();
 					});
 				})();
 			</script>
