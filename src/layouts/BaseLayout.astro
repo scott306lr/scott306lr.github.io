@@ -25,19 +25,38 @@ const { title, description } = Astro.props;
 
 		<script is:inline>
 			(function () {
-				function applyTheme() {
-					const key = 'theme';
-					const stored = localStorage.getItem(key);
-					const theme = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-					const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
-					document.documentElement.classList.toggle('dark', isDark);
+				const THEME_KEY = 'theme';
+
+				function getTheme() {
+					const stored = localStorage.getItem(THEME_KEY);
+					return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
 				}
 
+				function computeIsDark() {
+					const theme = getTheme();
+					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					return theme === 'dark' || (theme === 'system' && prefersDark);
+				}
+
+				function applyTheme() {
+					document.documentElement.classList.toggle('dark', computeIsDark());
+				}
+
+				// Initial load: run at parse-time.
 				applyTheme();
 
-				// Prevent flash during view transitions by applying ASAP.
-				document.addEventListener('astro:before-swap', applyTheme);
+				// View transitions: keep theme correct during swaps.
+				document.addEventListener('astro:before-swap', (event) => {
+					applyTheme();
+
+					// Ensure the incoming document keeps the same theme class so it
+					// doesn't flash default styles mid-transition.
+					const nextIsDark = computeIsDark();
+					const nextDoc = event?.newDocument;
+					if (nextDoc?.documentElement) {
+						nextDoc.documentElement.classList.toggle('dark', nextIsDark);
+					}
+				});
 				document.addEventListener('astro:after-swap', applyTheme);
 			})();
 		</script>
