@@ -128,5 +128,9 @@ const menuId = 'theme-menu';
 		media.addEventListener('change', handler);
 	}
 
-	document.addEventListener('astro:page-load', initThemeDropdown);
+	const PAGE_LOAD_BOUND_FLAG = '__themeDropdownPageLoadBound';
+	if (!window[PAGE_LOAD_BOUND_FLAG]) {
+		window[PAGE_LOAD_BOUND_FLAG] = true;
+		document.addEventListener('astro:page-load', initThemeDropdown);
+	}
 </script>

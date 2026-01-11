@@ -68,7 +68,9 @@ const { posts, projects } = await getEntriesForTag(tag.slug);
 				const empty = document.getElementById('tag-empty');
 				if (!(input instanceof HTMLInputElement)) return;
 
-				const items = Array.from(document.querySelectorAll('[data-filter-text]'));
+				const items = Array.from(
+					document.querySelectorAll('#tag-posts-list [data-filter-text], #tag-projects-list [data-filter-text]')
+				);
 
 				function apply() {
 					const q = input.value.trim().toLowerCase();

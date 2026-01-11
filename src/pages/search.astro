@@ -61,6 +61,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 		// Supports both full page load and ClientRouter navigations.
 		// `astro:page-load` fires on initial load too.
-		document.addEventListener('astro:page-load', initPagefind);
+		const PAGE_LOAD_BOUND_FLAG = '__pagefindPageLoadBound';
+		if (!window[PAGE_LOAD_BOUND_FLAG]) {
+			window[PAGE_LOAD_BOUND_FLAG] = true;
+			document.addEventListener('astro:page-load', initPagefind);
+		}
 	</script>
 </BaseLayout>
