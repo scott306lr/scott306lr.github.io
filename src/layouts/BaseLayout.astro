@@ -209,16 +209,18 @@ const { title, description } = Astro.props;
 				})();
 			</script>
 
-			<div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-				<nav class="flex items-center gap-4 text-sm">
-					<a href="/" class="font-semibold no-underline hover:underline">Scott</a>
-					<a href="/posts" class="text-muted-foreground no-underline hover:text-foreground">Posts</a>
-					<a href="/projects" class="text-muted-foreground no-underline hover:text-foreground">Projects</a>
-					<a href="/tags" class="text-muted-foreground no-underline hover:text-foreground">Tags</a>
-					<a href="/search" class="text-muted-foreground no-underline hover:text-foreground">Search</a>
-					<a href="/about" class="text-muted-foreground no-underline hover:text-foreground">About</a>
+			<div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-4">
+				<nav aria-label="Primary" class="flex flex-wrap items-center gap-1 text-sm">
+					<a href="/" class="rounded-md px-2 py-1 font-semibold no-underline hover:bg-accent hover:text-accent-foreground">Scott</a>
+					<a href="/posts" class="rounded-md px-2 py-1 text-muted-foreground no-underline hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">Posts</a>
+					<a href="/projects" class="rounded-md px-2 py-1 text-muted-foreground no-underline hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">Projects</a>
+					<a href="/tags" class="rounded-md px-2 py-1 text-muted-foreground no-underline hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">Tags</a>
+					<a href="/search" class="rounded-md px-2 py-1 text-muted-foreground no-underline hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">Search</a>
+					<a href="/about" class="rounded-md px-2 py-1 text-muted-foreground no-underline hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">About</a>
 				</nav>
-				<ThemeDropdown />
+				<div class="shrink-0">
+					<ThemeDropdown />
+				</div>
 			</div>
 		</header>
 
