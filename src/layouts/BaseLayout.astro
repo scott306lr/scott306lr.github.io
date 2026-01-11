@@ -40,7 +40,7 @@ const { title, description } = Astro.props;
 		<script is:inline>
 			const COPY_RESET_MS = 1200;
 			const COPY_CODE_BUTTON_SELECTOR = 'button.code-copy';
-			const CODE_BLOCK_SELECTOR = 'pre.astro-code';
+			const CODE_BLOCK_SELECTOR = 'article pre:has(> code)';
 			const CODE_COPY_INIT_FLAG = 'codeCopyInit';
 
 			function getPreText(pre) {
@@ -58,10 +58,33 @@ const { title, description } = Astro.props;
 				`.trim();
 			}
 
+			let ensureQueued = false;
+			function deferEnsure() {
+				if (ensureQueued) return;
+				ensureQueued = true;
+				// View transitions can leave DOM in flux; defer one frame.
+				requestAnimationFrame(() => {
+					ensureQueued = false;
+					ensureCodeCopyButtons(document);
+				});
+			}
+
+			function isCopyablePre(pre) {
+				if (!(pre instanceof HTMLElement)) return false;
+				if (pre.querySelector(COPY_CODE_BUTTON_SELECTOR)) return false;
+
+				// Only attach to code blocks (skip keyboard-shortcut <pre>, etc.).
+				return Boolean(pre.querySelector('code'));
+			}
+
+			function isWithinNoCopy(pre) {
+				return Boolean(pre.closest('[data-no-code-copy]'));
+			}
+
 			function ensureCodeCopyButtons(root) {
 				(root || document).querySelectorAll(CODE_BLOCK_SELECTOR).forEach((pre) => {
-					if (!(pre instanceof HTMLElement)) return;
-					if (pre.querySelector(COPY_CODE_BUTTON_SELECTOR)) return;
+					if (!isCopyablePre(pre)) return;
+					if (isWithinNoCopy(pre)) return;
 
 					const button = document.createElement('button');
 					button.type = 'button';
@@ -74,8 +97,8 @@ const { title, description } = Astro.props;
 						const codeText = getPreText(pre);
 						try {
 							await navigator.clipboard.writeText(codeText);
-							button.setAttribute('aria-label', 'Copied.');
-							button.setAttribute('title', 'Copied.');
+							button.setAttribute('aria-label', 'Copied');
+							button.setAttribute('title', 'Copied');
 							button.dataset.copied = 'true';
 						} catch {
 							return;
@@ -96,25 +119,21 @@ const { title, description } = Astro.props;
 				if (window[CODE_COPY_INIT_FLAG]) return;
 				window[CODE_COPY_INIT_FLAG] = true;
 
-				ensureCodeCopyButtons(document);
+				deferEnsure();
 
-				const observer = new MutationObserver((mutations) => {
-					for (const mutation of mutations) {
-						for (const node of mutation.addedNodes) {
-							if (!(node instanceof HTMLElement)) continue;
-
-							if (node.matches?.(CODE_BLOCK_SELECTOR) || node.querySelector?.(CODE_BLOCK_SELECTOR)) {
-								ensureCodeCopyButtons(node);
-							}
-						}
-					}
+				const observer = new MutationObserver(() => {
+					deferEnsure();
 				});
 
 				observer.observe(document.body, { childList: true, subtree: true });
+				document.addEventListener('DOMContentLoaded', deferEnsure);
+				document.addEventListener('astro:page-load', deferEnsure);
+				document.addEventListener('astro:after-swap', deferEnsure);
 			}
 
 			setupCodeCopyObserver();
 		</script>
+
 
 	</head>
 	<body>

@@ -9,58 +9,57 @@ draft: false
 import ServerOnlyHello from '../../components/react/ServerOnlyHello';
 import CounterIsland from '../../components/react/CounterIsland';
 
-This post is a quick, practical checklist for adding new content.
+This is a quick, practical checklist for adding content to this site.
 
-<img
-  src="https://placehold.co/1200x400.png"
-  alt="Placeholder banner image"
-/>
+<img src="https://placehold.co/1200x400.png" alt="Placeholder banner image" />
 
-## 1) Add a new post / project
+## 1) Create a post or project
 
-### Posts
+Use the generator scripts when possible (they apply the template and frontmatter).
 
-- Folder: `src/content/posts/`
-- Create: `my-post-slug.mdx`
-- Best way (uses the template):
+### Post
+
+- Location: `src/content/posts/`
+- File name: `my-post-slug.mdx`
 
 ```bash
 npm run new:post -- my-post-slug 2026-01-11
 ```
 
-### Projects
+### Project
 
-- Folder: `src/content/projects/`
-- Create: `my-project-slug.mdx`
-- Best way:
+- Location: `src/content/projects/`
+- File name: `my-project-slug.mdx`
 
 ```bash
 npm run new:project -- my-project-slug 2026-01-11
 ```
 
-## 2) Add and store images
+## 2) Add images
 
-You have two good options.
+There are two approaches: “simple” (just copy a file) or “optimized” (Astro image pipeline).
 
-### Option A (simple): put images in `public/`
+### Option A (simple): serve from `public/`
 
-- Put images somewhere like: `public/images/my-post/diagram.png`
-- Reference it from MDX with a normal `<img>` (fast and easy):
+1) Put files under `public/`, for example:
+
+- `public/images/my-post/diagram.png`
+
+2) Reference them from MDX with a plain `<img>`:
 
 ```mdx
-<img src="https://placehold.co/800x450.png" alt="Diagram" />
+<img src="/images/my-post/diagram.png" alt="Diagram" />
 ```
 
 Example (rendered below):
 
 <img src="https://placehold.co/800x450.png" alt="Diagram" />
 
-This works because everything in `public/` is served from the site root.
+This works because anything in `public/` is served from the site root.
 
 ### Option B (optimized): import from `src/assets/`
 
-If you want Astro image optimization (`<Image />`), store images in `src/assets/` and import them.
-Example:
+Use this when you want Astro’s `<Image />` optimization (formats like WebP, responsive sizing, etc.).
 
 ```mdx
 ---
@@ -72,10 +71,12 @@ import figure from '../../assets/profile-placeholder.png';
 ```
 
 Notes:
-- The relative import path depends on where the MDX file lives.
-- Use this when you care about responsive images/optimization.
+- The import path is relative to the `.mdx` file.
+- Prefer this when performance/quality matters.
 
-## 3) Code blocks
+## 3) Add code snippets
+
+### Code blocks
 
 Use fenced code blocks:
 
@@ -85,11 +86,13 @@ export function hello(name: string) {
 }
 ```
 
-For inline code, use backticks: `npm run build`.
+### Inline code
+
+Use backticks for short commands/config keys: `npm run build`.
 
 ## 4) Island demo (Preact + React-compat)
 
-Below is a small interactive “island” embedded inside a normal MDX blog post.
+This section is a reference example: how to embed a small interactive “island” in an otherwise static MDX post.
 
 <div class="not-prose my-6 rounded-xl border bg-card p-5 shadow-sm">
   <div class="flex flex-col gap-1">
@@ -110,23 +113,19 @@ Below is a small interactive “island” embedded inside a normal MDX blog post
   <details class="mt-4">
     <summary class="cursor-pointer text-sm font-medium">What’s happening here?</summary>
     <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-      <li>
-        <code>ServerOnlyHello</code> renders to HTML at build/SSR time and ships no client JS.
-      </li>
-      <li>
-        <code>CounterIsland</code> hydrates when it becomes visible, so its JS loads only when needed.
-      </li>
-      <li>
-        We use Preact for islands, with <code>react</code> imports aliased to <code>preact/compat</code> for shadcn.
-      </li>
+      <li><code>ServerOnlyHello</code> is server-rendered (no hydration, no shipped JS).</li>
+      <li><code>CounterIsland</code> hydrates when it becomes visible (<code>client:visible</code>).</li>
+      <li>The site uses Preact for islands, with <code>react</code> aliased to <code>preact/compat</code> so shadcn components can coexist.</li>
     </ul>
   </details>
 </div>
 
-## 5) When you are ready to publish
+## 5) Publish checklist
 
-- Set `draft: false`
-- Verify locally:
+Before publishing:
+
+- Ensure <code>draft: false</code> in the frontmatter.
+- Sanity check locally:
 
 ```bash
 npm run dev
