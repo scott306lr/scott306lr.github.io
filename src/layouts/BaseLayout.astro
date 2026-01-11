@@ -42,6 +42,7 @@ const { title, description } = Astro.props;
 			const COPY_CODE_BUTTON_SELECTOR = 'button.code-copy';
 			const CODE_BLOCK_SELECTOR = 'article pre:has(> code)';
 			const CODE_COPY_INIT_FLAG = 'codeCopyInit';
+			const CONTENT_ROOT_SELECTOR = 'main#content';
 
 			function getPreText(pre) {
 				const code = pre.querySelector('code');
@@ -58,36 +59,16 @@ const { title, description } = Astro.props;
 				`.trim();
 			}
 
-			let ensureQueued = false;
-			function deferEnsure() {
-				if (ensureQueued) return;
-				ensureQueued = true;
-
-				// Ensure we run after Astro has finished swapping DOM.
-				queueMicrotask(() => {
-					requestAnimationFrame(() => {
-						ensureQueued = false;
-						ensureCodeCopyButtons(document);
-					});
-				});
-			}
-
-			function isCopyablePre(pre) {
-				if (!(pre instanceof HTMLElement)) return false;
-				if (pre.querySelector(COPY_CODE_BUTTON_SELECTOR)) return false;
-
-				// Only attach to code blocks (skip keyboard-shortcut <pre>, etc.).
-				return Boolean(pre.querySelector('code'));
-			}
-
 			function isWithinNoCopy(pre) {
 				return Boolean(pre.closest('[data-no-code-copy]'));
 			}
 
 			function ensureCodeCopyButtons(root) {
 				(root || document).querySelectorAll(CODE_BLOCK_SELECTOR).forEach((pre) => {
-					if (!isCopyablePre(pre)) return;
+					if (!(pre instanceof HTMLElement)) return;
 					if (isWithinNoCopy(pre)) return;
+					if (pre.querySelector(COPY_CODE_BUTTON_SELECTOR)) return;
+					if (!pre.querySelector('code')) return;
 
 					const button = document.createElement('button');
 					button.type = 'button';
@@ -96,46 +77,51 @@ const { title, description } = Astro.props;
 					button.setAttribute('title', 'Copy code');
 					button.innerHTML = copyIconSvg();
 
-					button.addEventListener('click', async () => {
-						const codeText = getPreText(pre);
-						try {
-							await navigator.clipboard.writeText(codeText);
-							button.setAttribute('aria-label', 'Copied');
-							button.setAttribute('title', 'Copied');
-							button.dataset.copied = 'true';
-						} catch {
-							return;
-						}
+					pre.append(button);
+				});
+			}
+
+			function handleCopyClick(event) {
+				const button = event.target instanceof Element ? event.target.closest(COPY_CODE_BUTTON_SELECTOR) : null;
+				if (!button) return;
+
+				const pre = button.closest('pre');
+				if (!pre) return;
+
+				const codeText = getPreText(pre);
+				navigator.clipboard
+					.writeText(codeText)
+					.then(() => {
+						button.setAttribute('aria-label', 'Copied');
+						button.setAttribute('title', 'Copied');
+						button.dataset.copied = 'true';
 
 						window.setTimeout(() => {
 							button.removeAttribute('data-copied');
 							button.setAttribute('aria-label', 'Copy code');
 							button.setAttribute('title', 'Copy code');
 						}, COPY_RESET_MS);
+					})
+					.catch(() => {
+						// Ignore copy failures.
 					});
-
-					pre.append(button);
-				});
 			}
 
-			function setupCodeCopyObserver() {
+			function initCodeCopy() {
 				if (window[CODE_COPY_INIT_FLAG]) return;
 				window[CODE_COPY_INIT_FLAG] = true;
 
-				deferEnsure();
-
-				const observer = new MutationObserver(() => {
-					deferEnsure();
-				});
-
-				observer.observe(document.body, { childList: true, subtree: true });
-				document.addEventListener('DOMContentLoaded', deferEnsure);
-				document.addEventListener('astro:page-load', deferEnsure);
-				document.addEventListener('astro:after-swap', deferEnsure);
-				document.addEventListener('astro:page-load', () => observer.observe(document.body, { childList: true, subtree: true }));
+				document.addEventListener('click', handleCopyClick);
 			}
 
-			setupCodeCopyObserver();
+			function refreshCodeCopyButtons() {
+				const root = document.querySelector(CONTENT_ROOT_SELECTOR) || document;
+				ensureCodeCopyButtons(root);
+			}
+
+			initCodeCopy();
+			document.addEventListener('DOMContentLoaded', refreshCodeCopyButtons);
+			document.addEventListener('astro:page-load', refreshCodeCopyButtons);
 		</script>
 
 
