@@ -7,12 +7,13 @@ const menuId = 'theme-menu';
 	<button
 		id={buttonId}
 		type="button"
-		class="inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+		class="inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none"
 		aria-haspopup="menu"
 		aria-expanded="false"
 		aria-controls={menuId}
 	>
-		Theme
+		<span aria-hidden="true" class="text-base leading-none">◐</span>
+		<span>Theme</span>
 	</button>
 	<div
 		id={menuId}
@@ -25,7 +26,7 @@ const menuId = 'theme-menu';
 			type="button"
 			role="menuitem"
 			data-theme-option="system"
-			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+			class="flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
 		>
 			System
 		</button>
@@ -33,7 +34,7 @@ const menuId = 'theme-menu';
 			type="button"
 			role="menuitem"
 			data-theme-option="light"
-			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+			class="flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
 		>
 			Light
 		</button>
@@ -41,7 +42,7 @@ const menuId = 'theme-menu';
 			type="button"
 			role="menuitem"
 			data-theme-option="dark"
-			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+			class="flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
 		>
 			Dark
 		</button>
