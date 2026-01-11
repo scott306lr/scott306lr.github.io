@@ -5,12 +5,12 @@ import path from 'node:path';
 function usage() {
 	return [
 		'Usage:',
-		'  npm run new:post -- <slug> [YYYY-MM-DD]',
-		'  npm run new:project -- <slug> [YYYY-MM-DD]',
+		'  npm run new:post <slug> [YYYY-MM-DD]',
+		'  npm run new:project <slug> [YYYY-MM-DD]',
 		'',
 		'Examples:',
-		'  npm run new:post -- kv-cache-notes 2026-01-11',
-		'  npm run new:project -- fast-llm-server 2026-01-11',
+		'  npm run new:post kv-cache-notes 2026-01-11',
+		'  npm run new:project fast-llm-server 2026-01-11',
 	].join('\n');
 }
 
@@ -55,8 +55,13 @@ function writeNewFile(outPath, content) {
 	fs.writeFileSync(outPath, content, 'utf8');
 }
 
-const [, , kind, slug, dateArg] = process.argv;
+const [, , kind, ...restArgs] = process.argv;
 if (kind !== 'post' && kind !== 'project') die(usage());
+
+// Allow running via npm scripts using an injected `--` separator.
+const args = restArgs[0] === '--' ? restArgs.slice(1) : restArgs;
+const [slug, dateArg] = args;
+
 assertSlug(slug);
 const date = normalizeDate(dateArg);
 

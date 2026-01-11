@@ -10,8 +10,8 @@
     "preview": "astro preview",
     "format": "prettier . --write",
     "check": "prettier . --check",
-    "new:post": "node scripts/new-content.mjs post",
-    "new:project": "node scripts/new-content.mjs project",
+    "new:post": "node scripts/new-content.mjs post --",
+    "new:project": "node scripts/new-content.mjs project --",
     "astro": "astro"
   },
   "dependencies": {
