@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/global.css';
 
 type Props = {
 	title: string;
@@ -29,7 +30,6 @@ const { title, description } = Astro.props;
 			})();
 		</script>
 
-		<link rel="stylesheet" href="/_app.css" />
 	</head>
 	<body>
 		<a
