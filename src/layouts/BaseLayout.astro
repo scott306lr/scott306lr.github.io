@@ -62,18 +62,25 @@ const { title, description } = Astro.props;
 			function deferEnsure() {
 				if (ensureQueued) return;
 				ensureQueued = true;
-				// View transitions can leave DOM in flux; defer one frame.
-				requestAnimationFrame(() => {
-					ensureQueued = false;
+				// Astro transitions can swap DOM multiple times; retry a few frames.
+				let tries = 0;
+				function tick() {
+					tries += 1;
 					ensureCodeCopyButtons(document);
-				});
+					if (document.querySelector(CODE_BLOCK_SELECTOR + ':not(:has(' + COPY_CODE_BUTTON_SELECTOR + '))')) {
+						if (tries < 5) requestAnimationFrame(tick);
+						else ensureQueued = false;
+						return;
+					}
+					ensureQueued = false;
+				}
+				requestAnimationFrame(tick);
 			}
 
 			function isCopyablePre(pre) {
 				if (!(pre instanceof HTMLElement)) return false;
 				if (pre.querySelector(COPY_CODE_BUTTON_SELECTOR)) return false;
 
-				// Only attach to code blocks (skip keyboard-shortcut <pre>, etc.).
 				return Boolean(pre.querySelector('code'));
 			}
 
@@ -125,10 +132,11 @@ const { title, description } = Astro.props;
 					deferEnsure();
 				});
 
-				observer.observe(document.body, { childList: true, subtree: true });
+				observer.observe(document.documentElement, { childList: true, subtree: true });
 				document.addEventListener('DOMContentLoaded', deferEnsure);
 				document.addEventListener('astro:page-load', deferEnsure);
 				document.addEventListener('astro:after-swap', deferEnsure);
+				document.addEventListener('astro:before-swap', deferEnsure);
 			}
 
 			setupCodeCopyObserver();
