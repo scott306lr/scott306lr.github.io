@@ -90,7 +90,6 @@ const { posts, projects } = await getEntriesForTag(tag.slug);
 				apply();
 			}
 
-			init();
 			document.addEventListener('astro:page-load', init);
 		})();
 	</script>

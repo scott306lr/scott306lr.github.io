@@ -58,7 +58,6 @@ const posts = (await getCollection('posts')).filter(isNotDraft).sort(sortByDateD
 				apply();
 			}
 
-			init();
 			document.addEventListener('astro:page-load', init);
 		})();
 	</script>

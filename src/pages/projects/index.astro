@@ -58,7 +58,6 @@ const projects = (await getCollection('projects')).filter(isNotDraft).sort(sortB
 				apply();
 			}
 
-			init();
 			document.addEventListener('astro:page-load', init);
 		})();
 	</script>
