@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ServerOnlyHello from '../components/react/ServerOnlyHello';
+import CounterIsland from '../components/react/CounterIsland';
+---
+
+<BaseLayout title="React Demo" description="Demonstrates server-only React and a hydrated island.">
+	<h1 class="mb-6 text-3xl font-bold">React Demo</h1>
+
+	<section class="mb-10 space-y-3">
+		<h2 class="text-xl font-semibold">Server-only React (no client JS)</h2>
+		<p class="text-muted-foreground">
+			This React component is rendered to HTML at build/SSR time because it has no <code>client:*</code>
+			directive.
+		</p>
+		<ServerOnlyHello name="Astro" />
+	</section>
+
+	<section class="space-y-3">
+		<h2 class="text-xl font-semibold">React island (client-side hydration)</h2>
+		<p class="text-muted-foreground">
+			This component hydrates on the client using <code>client:visible</code>, so React is only downloaded
+			if/when this island enters the viewport.
+		</p>
+		<CounterIsland client:visible initial={0} />
+	</section>
+</BaseLayout>
