@@ -87,15 +87,41 @@ export function hello(name: string) {
 
 For inline code, use backticks: `npm run build`.
 
-## 4) React island demo (inside a real post)
+## 4) Island demo (Preact + React-compat)
 
-This section proves the "Astro islands" approach:
-- `ServerOnlyHello` renders via React on the server/build with **no** client hydration.
-- `CounterIsland` hydrates with `client:visible`, so React is only downloaded when this component scrolls into view.
+Below is a small interactive “island” embedded inside a normal MDX blog post.
 
-<ServerOnlyHello name="from an MDX blog post" />
+<div class="not-prose my-6 rounded-xl border bg-card p-5 shadow-sm">
+  <div class="flex flex-col gap-1">
+    <h3 class="text-base font-semibold leading-tight">Island demo</h3>
+    <p class="text-sm text-muted-foreground">
+      Server-only component + a hydrated counter. The counter uses <code>client:visible</code>.
+    </p>
+  </div>
 
-<CounterIsland client:visible initial={0} />
+  <div class="mt-4 rounded-lg border bg-background p-4">
+    <ServerOnlyHello name="from an MDX blog post" />
+
+    <div class="mt-3">
+      <CounterIsland client:visible initial={0} />
+    </div>
+  </div>
+
+  <details class="mt-4">
+    <summary class="cursor-pointer text-sm font-medium">What’s happening here?</summary>
+    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+      <li>
+        <code>ServerOnlyHello</code> renders to HTML at build/SSR time and ships no client JS.
+      </li>
+      <li>
+        <code>CounterIsland</code> hydrates when it becomes visible, so its JS loads only when needed.
+      </li>
+      <li>
+        We use Preact for islands, with <code>react</code> imports aliased to <code>preact/compat</code> for shadcn.
+      </li>
+    </ul>
+  </details>
+</div>
 
 ## 5) When you are ready to publish
 
