@@ -14,7 +14,7 @@ const { title, description, date, lastUpdated, tags = [] } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
-	<article class="prose prose-zinc max-w-none dark:prose-invert">
+	<article class="prose prose-zinc max-w-none dark:prose-invert prose-headings:scroll-mt-24">
 		<header class="not-prose mb-8">
 			<h1 class="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h1>
 			{description ? <p class="mb-3 text-zinc-600 dark:text-zinc-300">{description}</p> : null}

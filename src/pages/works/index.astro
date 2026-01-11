@@ -8,17 +8,20 @@ const works = (await getCollection('works')).filter(isNotDraft).sort(sortByDateD
 ---
 
 <BaseLayout title="Works" description="Projects, experiments, and shipped things.">
-	<h1 class="text-2xl font-bold tracking-tight">Works</h1>
-	<ul class="mt-6 space-y-4">
+	<h1 class="text-2xl font-semibold tracking-tight">Works</h1>
+	<p class="mt-2 text-sm text-muted-foreground">Projects, experiments, and shipped things.</p>
+	<div class="mt-6 grid gap-4">
 		{works.map((work) => (
-			<li>
-				<a href={`/works/${work.slug}`} class="no-underline hover:underline">
-					<span class="font-medium">{work.data.title}</span>
-				</a>
-				<div class="text-sm text-zinc-500 dark:text-zinc-400">
-					{formatYmd(work.data.date)} · {work.data.summary}
+			<a
+				href={`/works/${work.slug}`}
+				class="rounded-lg border bg-card p-4 no-underline transition hover:bg-accent"
+			>
+				<div class="flex items-baseline justify-between gap-4">
+					<span class="font-medium text-card-foreground">{work.data.title}</span>
+					<span class="text-xs text-muted-foreground">{formatYmd(work.data.date)}</span>
 				</div>
-			</li>
+				<p class="mt-2 text-sm text-muted-foreground">{work.data.summary}</p>
+			</a>
 		))}
-	</ul>
+	</div>
 </BaseLayout>
