@@ -1,0 +1,30 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { getCollection } from 'astro:content';
+import { getGitLastUpdatedIso } from '../../lib/gitLastUpdated';
+import { resolveEntrySourcePath } from '../../lib/entrySourcePath';
+import { slugifyTag } from '../../lib/tags';
+
+export async function getStaticPaths() {
+	const works = await getCollection('works');
+	return works.filter((w) => !w.data.draft).map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
+}
+
+const { work } = Astro.props;
+
+const entryPath = await resolveEntrySourcePath({
+	cwdPathname: process.cwd(),
+	collection: 'works',
+	slug: work.slug,
+});
+const lastUpdatedIso = entryPath ? await getGitLastUpdatedIso(entryPath) : null;
+const lastUpdated = lastUpdatedIso ? new Date(lastUpdatedIso) : null;
+
+const tags = (work.data.tags ?? []).map((t) => ({ label: t, slug: slugifyTag(t) }));
+
+const { Content } = await work.render();
+---
+
+<ContentLayout title={work.data.title} description={work.data.summary} date={work.data.date} lastUpdated={lastUpdated} tags={tags}>
+	<Content />
+</ContentLayout>

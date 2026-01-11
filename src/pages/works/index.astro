@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { isNotDraft, sortByDateDesc } from '../../lib/content';
+import { formatYmd } from '../../lib/dates';
+
+const works = (await getCollection('works')).filter(isNotDraft).sort(sortByDateDesc);
+---
+
+<BaseLayout title="Works" description="Projects, experiments, and shipped things.">
+	<h1 class="text-2xl font-bold tracking-tight">Works</h1>
+	<ul class="mt-6 space-y-4">
+		{works.map((work) => (
+			<li>
+				<a href={`/works/${work.slug}`} class="no-underline hover:underline">
+					<span class="font-medium">{work.data.title}</span>
+				</a>
+				<div class="text-sm text-zinc-500 dark:text-zinc-400">
+					{formatYmd(work.data.date)} · {work.data.summary}
+				</div>
+			</li>
+		))}
+	</ul>
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { getCollection } from 'astro:content';
+import { getGitLastUpdatedIso } from '../../lib/gitLastUpdated';
+import { resolveEntrySourcePath } from '../../lib/entrySourcePath';
+import { slugifyTag } from '../../lib/tags';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('posts');
+	return posts
+		.filter((p) => !p.data.draft)
+		.map((p) => ({ params: { slug: p.slug }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+
+const entryPath = await resolveEntrySourcePath({
+	cwdPathname: process.cwd(),
+	collection: 'posts',
+	slug: post.slug,
+});
+const lastUpdatedIso = entryPath ? await getGitLastUpdatedIso(entryPath) : null;
+const lastUpdated = lastUpdatedIso ? new Date(lastUpdatedIso) : null;
+
+const tags = (post.data.tags ?? []).map((t) => ({ label: t, slug: slugifyTag(t) }));
+
+const { Content } = await post.render();
+---
+
+<ContentLayout
+	title={post.data.title}
+	description={post.data.description}
+	date={post.data.pubDate}
+	lastUpdated={lastUpdated}
+	tags={tags}
+>
+	<Content />
+</ContentLayout>
