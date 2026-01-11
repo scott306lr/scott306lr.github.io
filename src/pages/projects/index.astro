@@ -3,22 +3,22 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { isNotDraft, sortByDateDesc } from '../../lib/content';
 import FilterBar from '../../components/FilterBar.astro';
-import PostCard from '../../components/PostCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 
-const posts = (await getCollection('posts')).filter(isNotDraft).sort(sortByDateDesc);
+const projects = (await getCollection('projects')).filter(isNotDraft).sort(sortByDateDesc);
 ---
 
-<BaseLayout title="Posts" description="Thoughts, notes, and write-ups.">
-	<h1 class="text-2xl font-semibold tracking-tight">Posts</h1>
-	<p class="mt-2 text-sm text-muted-foreground">Thoughts, notes, and write-ups.</p>
+<BaseLayout title="Projects" description="Projects, experiments, and shipped things.">
+	<h1 class="text-2xl font-semibold tracking-tight">Projects</h1>
+	<p class="mt-2 text-sm text-muted-foreground">Projects, experiments, and shipped things.</p>
 
-	<FilterBar id="posts-filter" placeholder="Filter posts (title, description, tags)…" />
+	<FilterBar id="projects-filter" placeholder="Filter projects (title, summary, tags)…" />
 
-	<div class="mt-6 grid gap-4" id="posts-list">
-		{posts.map((post) => (
-			<PostCard
-				post={post}
-				filterText={[post.data.title, post.data.description, ...(post.data.tags ?? [])]
+	<div class="mt-6 grid gap-4" id="projects-list">
+		{projects.map((project) => (
+			<ProjectCard
+				project={project}
+				filterText={[project.data.title, project.data.summary, ...(project.data.tags ?? [])]
 					.filter(Boolean)
 					.join(' ')
 					.toLowerCase()}
@@ -26,13 +26,13 @@ const posts = (await getCollection('posts')).filter(isNotDraft).sort(sortByDateD
 		))}
 	</div>
 
-	<p id="posts-empty" class="mt-6 hidden text-sm text-muted-foreground">No matches.</p>
+	<p id="projects-empty" class="mt-6 hidden text-sm text-muted-foreground">No matches.</p>
 
 	<script is:inline>
 		(function () {
-			const input = document.getElementById('posts-filter');
-			const list = document.getElementById('posts-list');
-			const empty = document.getElementById('posts-empty');
+			const input = document.getElementById('projects-filter');
+			const list = document.getElementById('projects-list');
+			const empty = document.getElementById('projects-empty');
 			if (!(input instanceof HTMLInputElement) || !list) return;
 
 			const items = Array.from(list.querySelectorAll('[data-filter-text]'));

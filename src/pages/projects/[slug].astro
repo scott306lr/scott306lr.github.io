@@ -6,25 +6,33 @@ import { resolveEntrySourcePath } from '../../lib/entrySourcePath';
 import { slugifyTag } from '../../lib/tags';
 
 export async function getStaticPaths() {
-	const works = await getCollection('works');
-	return works.filter((w) => !w.data.draft).map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
+	const projects = await getCollection('projects');
+	return projects
+		.filter((p) => !p.data.draft)
+		.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
 }
 
-const { work } = Astro.props;
+const { project } = Astro.props;
 
 const entryPath = await resolveEntrySourcePath({
 	cwdPathname: process.cwd(),
-	collection: 'works',
-	slug: work.slug,
+	collection: 'projects',
+	slug: project.slug,
 });
 const lastUpdatedIso = entryPath ? await getGitLastUpdatedIso(entryPath) : null;
 const lastUpdated = lastUpdatedIso ? new Date(lastUpdatedIso) : null;
 
-const tags = (work.data.tags ?? []).map((t) => ({ label: t, slug: slugifyTag(t) }));
+const tags = (project.data.tags ?? []).map((t) => ({ label: t, slug: slugifyTag(t) }));
 
-const { Content } = await work.render();
+const { Content } = await project.render();
 ---
 
-<ContentLayout title={work.data.title} description={work.data.summary} date={work.data.date} lastUpdated={lastUpdated} tags={tags}>
+<ContentLayout
+	title={project.data.title}
+	description={project.data.summary}
+	date={project.data.date}
+	lastUpdated={lastUpdated}
+	tags={tags}
+>
 	<Content />
 </ContentLayout>

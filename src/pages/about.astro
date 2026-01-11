@@ -1,12 +1,103 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import profileImage from '../assets/profile-placeholder.png';
+
+import experienceData from '../../data/experience.json';
+import { validateExperience } from '../lib/academicData';
+import { formatYmd } from '../lib/dates';
+
+const experience = validateExperience(experienceData);
 ---
 
-<BaseLayout title="About" description="About Scott.">
-	<h1 class="text-2xl font-bold tracking-tight">About</h1>
+<BaseLayout title="About" description="About Pei-Shuo Wang.">
+	<div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+		<div>
+			<h1 class="text-2xl font-bold tracking-tight">About</h1>
+			<p class="mt-2 text-muted-foreground">Academic bio, interests, and links.</p>
+		</div>
+		<Image
+			src={profileImage}
+			alt="Portrait of Pei-Shuo Wang"
+			width={144}
+			height={144}
+			format="webp"
+			quality={70}
+			loading="eager"
+			class="h-24 w-24 rounded-full border border-border object-cover shadow-sm"
+		/>
+	</div>
+
 	<div class="prose prose-zinc mt-6 max-w-none dark:prose-invert prose-a:text-foreground prose-a:underline-offset-4 hover:prose-a:underline">
 		<p>
-			Write a short bio here. Add links to your GitHub, email, and anywhere else you want people to find you.
+			I’m Pei-Shuo Wang, a Master’s student in the Institute of Network Engineering at National Yang Ming Chiao Tung University (NYCU).
+			My research interests include efficient large language model (LLM) inference, model compression (e.g., KV-cache compression and low-rank methods), and systems/hardware-aware acceleration.
 		</p>
+		<p>
+			You can reach me at <a href="mailto:scott306lr@gmail.com">scott306lr@gmail.com</a> or find me on
+			<a href="https://github.com/scott306lr">GitHub</a> / <a href="https://www.linkedin.com/in/pei-shuo-wang-557754229">LinkedIn</a>.
+		</p>
+	</div>
+
+	<div class="mt-10 grid gap-8 md:grid-cols-2">
+		<section>
+			<h2 class="text-lg font-semibold">Experience</h2>
+			<ul class="mt-3 space-y-4 text-sm text-muted-foreground">
+				{experience
+					.toSorted((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+					.map((item) => (
+						<li>
+							<div>
+								<span class="font-medium text-foreground">{item.role}</span>
+								<span class="text-muted-foreground"> · {item.org}</span>
+							</div>
+							<div class="text-xs text-muted-foreground">
+								{formatYmd(new Date(item.startDate))}
+								{item.endDate ? ` — ${formatYmd(new Date(item.endDate))}` : ' — present'}
+								{item.location ? ` · ${item.location}` : ''}
+							</div>
+							{item.highlights?.length ? (
+								<ul class="mt-2 list-disc space-y-1 pl-5">
+									{item.highlights.map((h) => (
+										<li>{h}</li>
+									))}
+								</ul>
+							) : null}
+						</li>
+					))}
+			</ul>
+		</section>
+
+		<section>
+			<h2 class="text-lg font-semibold">Education</h2>
+			<ul class="mt-3 space-y-2 text-sm text-muted-foreground">
+				<li>
+					<span class="font-medium text-foreground">M.S., Institute of Network Engineering</span> · National Yang Ming Chiao Tung University (NYCU)
+					<span class="text-muted-foreground"> · Sep 2023 – Jan 2026 · cGPA 4.3/4.3 (Top 1%)</span>
+				</li>
+				<li>
+					<span class="font-medium text-foreground">B.S., Computer Science</span> · National Yang Ming Chiao Tung University (NYCU)
+					<span class="text-muted-foreground"> · Sep 2019 – Jun 2023 · cGPA 3.71/4.3, Major 4.04/4.3</span>
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2 class="text-lg font-semibold">Highlights</h2>
+			<ul class="mt-3 space-y-2 text-sm text-muted-foreground">
+				<li>
+					<span class="font-medium text-foreground">Neuchips Inc.</span> · Software Engineering Intern (Jul 2022 – Sep 2022)
+				</li>
+				<li>
+					<span class="font-medium text-foreground">NYCU</span> · Teaching Assistant: Edge AI, XR Camp (Feb 2024 – Jul 2025)
+				</li>
+				<li>
+					Phi Tau Phi Honor Society (Top 3% of Master’s graduands)
+				</li>
+				<li>
+					Bronze Award, ICPC Asia Taipei Regional 2021 (47/108)
+				</li>
+			</ul>
+		</section>
 	</div>
 </BaseLayout>

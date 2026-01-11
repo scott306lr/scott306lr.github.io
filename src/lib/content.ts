@@ -1,6 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 
-export function isNotDraft(entry: CollectionEntry<'posts'> | CollectionEntry<'works'>): boolean {
+export function isNotDraft(entry: CollectionEntry<'posts'> | CollectionEntry<'projects'>): boolean {
   return !entry.data.draft;
 }
 

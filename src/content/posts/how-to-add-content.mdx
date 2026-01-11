@@ -1,0 +1,95 @@
+---
+title: "How to add content (posts, projects, images, code)"
+description: "A quick guide for adding new posts/projects, plus images and code blocks."
+pubDate: 2026-01-11
+tags: ["guide", "astro", "mdx"]
+draft: false
+---
+
+This post is a quick, practical checklist for adding new content.
+
+<img
+  src="https://placehold.co/1200x400.png"
+  alt="Placeholder banner image"
+/>
+
+## 1) Add a new post / project
+
+### Posts
+
+- Folder: `src/content/posts/`
+- Create: `my-post-slug.mdx`
+- Best way (uses the template):
+
+```bash
+npm run new:post -- my-post-slug 2026-01-11
+```
+
+### Projects
+
+- Folder: `src/content/projects/`
+- Create: `my-project-slug.mdx`
+- Best way:
+
+```bash
+npm run new:project -- my-project-slug 2026-01-11
+```
+
+## 2) Add and store images
+
+You have two good options.
+
+### Option A (simple): put images in `public/`
+
+- Put images somewhere like: `public/images/my-post/diagram.png`
+- Reference it from MDX with a normal `<img>` (fast and easy):
+
+```mdx
+<img src="https://placehold.co/800x450.png" alt="Diagram" />
+```
+
+Example (rendered below):
+
+<img src="https://placehold.co/800x450.png" alt="Diagram" />
+
+This works because everything in `public/` is served from the site root.
+
+### Option B (optimized): import from `src/assets/`
+
+If you want Astro image optimization (`<Image />`), store images in `src/assets/` and import them.
+Example:
+
+```mdx
+---
+import { Image } from 'astro:assets';
+import figure from '../../assets/profile-placeholder.png';
+---
+
+<Image src={figure} alt="Example image" width={800} format="webp" />
+```
+
+Notes:
+- The relative import path depends on where the MDX file lives.
+- Use this when you care about responsive images/optimization.
+
+## 3) Code blocks
+
+Use fenced code blocks:
+
+```ts
+export function hello(name: string) {
+  return `Hello, ${name}`;
+}
+```
+
+For inline code, use backticks: `npm run build`.
+
+## 4) When you are ready to publish
+
+- Set `draft: false`
+- Verify locally:
+
+```bash
+npm run dev
+npm run build
+```

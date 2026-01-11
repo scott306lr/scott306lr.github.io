@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getEntriesForTag, getTagIndex } from '../../lib/tagIndex';
-import { formatYmd } from '../../lib/dates';
 import FilterBar from '../../components/FilterBar.astro';
+import PostCard from '../../components/PostCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 
 export async function getStaticPaths() {
 	const tags = await getTagIndex();
@@ -10,10 +11,10 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.props as { tag: { slug: string; label: string } };
-const { posts, works } = await getEntriesForTag(tag.slug);
+const { posts, projects } = await getEntriesForTag(tag.slug);
 ---
 
-<BaseLayout title={`Tag: ${tag.label}`} description={`Posts and works tagged “${tag.label}”.`}>
+<BaseLayout title={`Tag: ${tag.label}`} description={`Posts and projects tagged “${tag.label}”.`}>
 	<h1 class="text-2xl font-bold tracking-tight">Tag: {tag.label}</h1>
 
 	<FilterBar id="tag-filter" placeholder={`Filter in “${tag.label}”…`} />
@@ -21,52 +22,42 @@ const { posts, works } = await getEntriesForTag(tag.slug);
 	{posts.length ? (
 		<section class="mt-8">
 			<h2 class="text-lg font-semibold">Posts</h2>
-			<ul class="mt-4 space-y-3" id="tag-posts-list">
-				{posts.map((p) => (
-					<li
-						data-filter-text={[p.data.title, ...(p.data.tags ?? [])]
+			<div class="mt-4 grid gap-4" id="tag-posts-list">
+				{posts.map((post) => (
+					<PostCard
+						post={post}
+						compact
+						filterText={[post.data.title, post.data.description, ...(post.data.tags ?? [])]
 							.filter(Boolean)
 							.join(' ')
 							.toLowerCase()}
-					>
-						<a
-							href={`/posts/${p.slug}`}
-							class="block rounded-lg border border-border bg-card p-4 no-underline transition-colors hover:bg-accent"
-						>
-							<div class="font-medium text-card-foreground">{p.data.title}</div>
-							<div class="mt-1 text-sm text-muted-foreground">{formatYmd(p.data.pubDate)}</div>
-						</a>
-					</li>
+					/>
 				))}
-			</ul>
+			</div>
 		</section>
 	) : null}
 
-	{works.length ? (
+	{projects.length ? (
+
 		<section class="mt-10">
-			<h2 class="text-lg font-semibold">Works</h2>
-			<ul class="mt-4 space-y-3" id="tag-works-list">
-				{works.map((w) => (
-					<li
-						data-filter-text={[w.data.title, ...(w.data.tags ?? [])]
+			<h2 class="text-lg font-semibold">Projects</h2>
+			<div class="mt-4 grid gap-4" id="tag-projects-list">
+				{projects.map((project) => (
+					<ProjectCard
+						project={project}
+						compact
+						filterText={[project.data.title, project.data.summary, ...(project.data.tags ?? [])]
 							.filter(Boolean)
 							.join(' ')
 							.toLowerCase()}
-					>
-						<a
-							href={`/works/${w.slug}`}
-							class="block rounded-lg border border-border bg-card p-4 no-underline transition-colors hover:bg-accent"
-						>
-							<div class="font-medium text-card-foreground">{w.data.title}</div>
-							<div class="mt-1 text-sm text-muted-foreground">{formatYmd(w.data.date)}</div>
-						</a>
-					</li>
+					/>
 				))}
-			</ul>
+			</div>
 		</section>
 	) : null}
 
-	{!posts.length && !works.length ? <p class="mt-8 text-muted-foreground">Nothing here yet.</p> : null}
+	{!posts.length && !projects.length ? <p class="mt-8 text-muted-foreground">Nothing here yet.</p> : null}
+
 
 	<p id="tag-empty" class="mt-8 hidden text-sm text-muted-foreground">No matches.</p>
 

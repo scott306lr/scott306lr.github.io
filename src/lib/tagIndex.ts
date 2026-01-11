@@ -4,7 +4,7 @@ import { slugifyTag } from './tags';
 
 export type TaggedEntry =
   | ({ kind: 'post' } & CollectionEntry<'posts'>)
-  | ({ kind: 'work' } & CollectionEntry<'works'>);
+  | ({ kind: 'project' } & CollectionEntry<'projects'>);
 
 export type TagIndexItem = {
   slug: string;
@@ -16,10 +16,10 @@ export async function getAllTaggedEntries(): Promise<TaggedEntry[]> {
   const posts = (await getCollection('posts'))
     .filter(isNotDraft)
     .map((p) => ({ ...p, kind: 'post' as const }));
-  const works = (await getCollection('works'))
+  const projects = (await getCollection('projects'))
     .filter(isNotDraft)
-    .map((w) => ({ ...w, kind: 'work' as const }));
-  return [...posts, ...works].sort(sortByDateDesc);
+    .map((p) => ({ ...p, kind: 'project' as const }));
+  return [...posts, ...projects].sort(sortByDateDesc);
 }
 
 export async function getTagIndex(): Promise<TagIndexItem[]> {
@@ -47,11 +47,11 @@ export async function getTagIndex(): Promise<TagIndexItem[]> {
 
 export async function getEntriesForTag(
   slug: string,
-): Promise<{ posts: TaggedEntry[]; works: TaggedEntry[] }> {
+): Promise<{ posts: TaggedEntry[]; projects: TaggedEntry[] }> {
   const entries = await getAllTaggedEntries();
   const matching = entries.filter((e) => (e.data.tags ?? []).some((t) => slugifyTag(t) === slug));
   return {
     posts: matching.filter((e) => e.kind === 'post'),
-    works: matching.filter((e) => e.kind === 'work'),
+    projects: matching.filter((e) => e.kind === 'project'),
   };
 }

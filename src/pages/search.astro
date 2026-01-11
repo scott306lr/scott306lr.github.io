@@ -2,9 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Search" description="Search posts and works.">
+<BaseLayout title="Search" description="Search posts and projects.">
 	<h1 class="text-2xl font-bold tracking-tight">Search</h1>
-	<p class="mt-2 text-muted-foreground">Type to search across posts and works.</p>
+	<p class="mt-2 text-muted-foreground">Type to search across posts and projects.</p>
 
 	<div id="search" class="mt-6"></div>
 
@@ -56,7 +56,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		}
 
 		// Supports both full page load and ClientRouter navigations.
+		// `astro:page-load` fires on initial load too, so don't double-init.
 		document.addEventListener('astro:page-load', initPagefind);
-		initPagefind();
 	</script>
 </BaseLayout>

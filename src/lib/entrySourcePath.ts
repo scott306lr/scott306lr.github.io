@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 
 export async function resolveEntrySourcePath(params: {
   cwdPathname: string;
-  collection: 'posts' | 'works';
+  collection: 'posts' | 'projects';
   slug: string;
 }): Promise<string | null> {
   const base = path.join(params.cwdPathname, 'src', 'content', params.collection);

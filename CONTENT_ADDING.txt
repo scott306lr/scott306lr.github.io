@@ -1,0 +1,40 @@
+Add new content (quick workflow)
+
+POSTS
+- Create a new file in: src/content/posts/
+- Name it: my-post-slug.mdx (the filename becomes the URL slug)
+- Required frontmatter fields (see src/content/config.ts):
+  - title: string
+  - description: string
+  - pubDate: date (YYYY-MM-DD is fine)
+- Optional:
+  - tags: string[] (default [])
+  - draft: boolean (default false; true hides from lists/build paths)
+  - heroImage: string (optional)
+- Copy starter: src/content/posts/_template.mdx
+
+PROJECTS
+- Create a new file in: src/content/projects/
+- Name it: my-project-slug.mdx
+- Required:
+  - title: string
+  - summary: string
+  - date: date (YYYY-MM-DD)
+- Optional:
+  - tech: string[]
+  - tags: string[]
+  - links: { repo?: url, demo?: url }
+  - images: string[]
+  - featured: boolean (homepage shows featured)
+  - draft: boolean
+- Copy starter: src/content/projects/_template.mdx
+
+DATA LISTS (CV-like)
+- publications: data/publications.json
+- events: data/events.json
+- experience: data/experience.json
+These are validated at build time; keep dates as YYYY-MM-DD.
+
+VERIFY
+- Run: npm run dev
+- Before deploy: npm run build

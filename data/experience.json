@@ -1,0 +1,35 @@
+[
+  {
+    "org": "Neuchips Inc.",
+    "role": "Software Engineering Intern",
+    "location": "Hsinchu, Taiwan",
+    "startDate": "2022-07-01",
+    "endDate": "2022-09-01",
+    "highlights": [
+      "Built automation tests and CI pipeline for edge AI SDK.",
+      "Worked on deployment and performance validation for AI inference workflows."
+    ]
+  },
+  {
+    "org": "National Yang Ming Chiao Tung University (NYCU)",
+    "role": "Teaching Assistant — Edge AI (Dept. of Computer Science)",
+    "location": "Hsinchu, Taiwan",
+    "startDate": "2024-02-01",
+    "endDate": "2025-07-01",
+    "highlights": [
+      "Assisted course instruction and lab sessions.",
+      "Supported student projects and debugging." 
+    ]
+  },
+  {
+    "org": "National Yang Ming Chiao Tung University (NYCU)",
+    "role": "Teaching Assistant — XR Camp (Dept. of Computer Science)",
+    "location": "Hsinchu, Taiwan",
+    "startDate": "2024-02-01",
+    "endDate": "2025-07-01",
+    "highlights": [
+      "Helped organize workshops and hands-on sessions.",
+      "Provided technical support for teams." 
+    ]
+  }
+]
