@@ -42,7 +42,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				return;
 			}
 
-			const existingScript = document.querySelector('script[src="/pagefind/pagefind-ui.js"]');
+			const scriptSelector = 'script[src="/pagefind/pagefind-ui.js"]';
+			const existingScript = document.querySelector(scriptSelector);
 			if (!existingScript) {
 				const script = document.createElement('script');
 				script.src = '/pagefind/pagefind-ui.js';
@@ -51,12 +52,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				return;
 			}
 
-			// Script already present (may still be loading)
-			existingScript.addEventListener('load', mount, { once: true });
+			// Script already present (may still be loading). Don't stack listeners.
+			if (existingScript.dataset.pagefindInit !== 'true') {
+				existingScript.dataset.pagefindInit = 'true';
+				existingScript.addEventListener('load', mount, { once: true });
+			}
 		}
 
 		// Supports both full page load and ClientRouter navigations.
-		// `astro:page-load` fires on initial load too, so don't double-init.
+		// `astro:page-load` fires on initial load too.
+		initPagefind();
 		document.addEventListener('astro:page-load', initPagefind);
 	</script>
 </BaseLayout>
