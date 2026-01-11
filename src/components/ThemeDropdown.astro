@@ -1,0 +1,113 @@
+---
+const buttonId = 'theme-menu-button';
+const menuId = 'theme-menu';
+---
+
+<div class="relative">
+	<button
+		id={buttonId}
+		type="button"
+		class="inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+		aria-haspopup="menu"
+		aria-expanded="false"
+		aria-controls={menuId}
+	>
+		Theme
+	</button>
+	<div
+		id={menuId}
+		role="menu"
+		aria-labelledby={buttonId}
+		hidden
+		class="absolute right-0 z-50 mt-2 min-w-36 overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md"
+	>
+		<button
+			type="button"
+			role="menuitem"
+			data-theme-option="system"
+			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+		>
+			System
+		</button>
+		<button
+			type="button"
+			role="menuitem"
+			data-theme-option="light"
+			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+		>
+			Light
+		</button>
+		<button
+			type="button"
+			role="menuitem"
+			data-theme-option="dark"
+			class="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+		>
+			Dark
+		</button>
+	</div>
+</div>
+
+<script>
+	const THEME_KEY = 'theme';
+
+	function getStoredTheme() {
+		const t = localStorage.getItem(THEME_KEY);
+		return t === 'light' || t === 'dark' || t === 'system' ? t : 'system';
+	}
+
+	function applyTheme(theme) {
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+		document.documentElement.classList.toggle('dark', isDark);
+	}
+
+	function setTheme(theme) {
+		localStorage.setItem(THEME_KEY, theme);
+		applyTheme(theme);
+	}
+
+	const button = document.getElementById('theme-menu-button');
+	const menu = document.getElementById('theme-menu');
+	if (!button || !menu) throw new Error('Theme dropdown elements missing');
+
+	const close = () => {
+		menu.hidden = true;
+		button.setAttribute('aria-expanded', 'false');
+	};
+
+	const open = () => {
+		menu.hidden = false;
+		button.setAttribute('aria-expanded', 'true');
+	};
+
+	button.addEventListener('click', () => {
+		if (menu.hidden) open();
+		else close();
+	});
+
+	document.addEventListener('click', (e) => {
+		if (!(e.target instanceof Node)) return;
+		if (!menu.contains(e.target) && !button.contains(e.target)) close();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') close();
+	});
+
+	menu.querySelectorAll('[data-theme-option]').forEach((el) => {
+		el.addEventListener('click', () => {
+			const theme = el.getAttribute('data-theme-option');
+			if (theme !== 'system' && theme !== 'light' && theme !== 'dark') return;
+			setTheme(theme);
+			close();
+		});
+	});
+
+	// Keep theme synced when system preference changes.
+	const media = window.matchMedia('(prefers-color-scheme: dark)');
+	const handler = () => {
+		if (getStoredTheme() === 'system') applyTheme('system');
+	};
+	media.addEventListener('change', handler);
+</script>
